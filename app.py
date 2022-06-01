@@ -6,7 +6,6 @@ from dash.dependencies import Input, Output, State
 import pandas as pd
 import plotly as py
 import plotly.graph_objs as go
-import logging
 
 
 ###### Define your variables #####
@@ -50,17 +49,16 @@ app.layout = html.Div([
 @app.callback(Output('display-value', 'figure'),
               [Input('dropdown', 'value')])
 def display_value(continuous_var):
-    grouped_mean=df.groupby(['Cabin Class', 'Embarked'])[continuous_var].mean()
+    grouped_mean=df.groupby(['Embarked'])[continuous_var].mean()
     results=pd.DataFrame(grouped_mean)
-    logging.info(results.head(10))
-    results.head(10)
     # Create a grouped pie chart
 
     mylayout = go.Layout(
-        title='Grouped pie chart',
+        title='Grouped pie chart 2',
     )
-    classname1 = [results.loc['first'].index, results.loc['second'].index, results.loc['third'].index]
-    volume = [results.loc['first'][continuous_var],results.loc['second'][continuous_var],results.loc['third'][continuous_var]]
+    classname1 = ['Cherbourg', 'Queenstown','Southampton']
+    volume = [results.loc['Cherbourg'][continuous_var],results.loc['Queenstown'][continuous_var],results.loc['Southampton'][continuous_var]]
+
     data = [go.Pie(labels=classname1, 
                values=volume
               )]
