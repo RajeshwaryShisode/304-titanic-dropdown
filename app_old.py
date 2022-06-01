@@ -6,7 +6,6 @@ from dash.dependencies import Input, Output, State
 import pandas as pd
 import plotly as py
 import plotly.graph_objs as go
-import logging
 
 
 ###### Define your variables #####
@@ -52,24 +51,36 @@ app.layout = html.Div([
 def display_value(continuous_var):
     grouped_mean=df.groupby(['Cabin Class', 'Embarked'])[continuous_var].mean()
     results=pd.DataFrame(grouped_mean)
-    logging.info(results.head(10))
-    results.head(10)
-    # Create a grouped pie chart
+    # Create a grouped bar chart
+    mydata1 = go.Bar(
+        x=results.loc['first'].index,
+        y=results.loc['first'][continuous_var],
+        name='First Class',
+        marker=dict(color=color1)
+    )
+    mydata2 = go.Bar(
+        x=results.loc['second'].index,
+        y=results.loc['second'][continuous_var],
+        name='Second Class',
+        marker=dict(color=color2)
+    )
+    mydata3 = go.Bar(
+        x=results.loc['third'].index,
+        y=results.loc['third'][continuous_var],
+        name='Third Class',
+        marker=dict(color=color3)
+    )
 
     mylayout = go.Layout(
-        title='Grouped pie chart',
-    )
-    classname1 = [results.loc['first'].index, results.loc['second'].index, results.loc['third'].index]
-    volume = [results.loc['first'][continuous_var],results.loc['second'][continuous_var],results.loc['third'][continuous_var]]
-    data = [go.Pie(labels=classname1, 
-               values=volume
-              )]
-    fig = go.Figure(data,layout=mylayout)
-    return fig 
+        title='Grouped bar chart',
+        xaxis = dict(title = 'Port of Embarkation'), # x-axis label
+        yaxis = dict(title = str(continuous_var)), # y-axis label
 
+    )
+    fig = go.Figure(data=[mydata1, mydata2, mydata3], layout=mylayout)
+    return fig
 
 
 ######### Run the app #########
 if __name__ == '__main__':
     app.run_server(debug=True)
-
